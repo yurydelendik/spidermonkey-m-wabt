@@ -5,11 +5,12 @@
 var fs = require('fs');
 var path = require('path');
 var log = require('npmlog');
-var unzip = require('unzip');
+var decompress = require('decompress');
 var rimraf = require('rimraf');
 
 var smBaseUrl = 'https://ftp.mozilla.org/pub/firefox/nightly/2016/10/2016-10-01-03-04-30-mozilla-central/';
 var outputDirectory = './spidermonkey';
+var tmpFile = ".downloaded.zip";
 
 function download(uri, callback) {
     log.http('download', uri);
@@ -94,19 +95,24 @@ function install() {
         log.error('unzip', 'Cannot create output folder: %s', outputDirectory);
         return;
       }
-      req.pipe(unzip.Parse())
-        .on('entry', function (entry) {
-          var fileName = entry.path;
-          entry.pipe(fs.createWriteStream(path.join(outputDirectory, fileName)))
-        })
-        .on('finish', function () {
+      req.pipe(fs.createWriteStream(path.join(outputDirectory, tmpFile)))
+        .on('finish', function (err) {
+          if (err) {
+            log.error('download', 'Cannot save zip file: %s', err);
+            return;
+          }
+          decompress(path.join(outputDirectory, tmpFile), outputDirectory).then(function(files) {
             log.verbose('config', 'Adjusting binaries');
             if (process.platform === 'linux') {
               adjustLinuxExecutable(outputDirectory);
             } else if (process.platform === 'darwin') {
               adjustMacExecutable(outputDirectory);
             }
+          }, function (err) {
+            log.error('unzip', 'Cannot unzip file: %s', err);
+            return;
           });
+      });
     });
   });
 }
