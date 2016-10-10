@@ -1,6 +1,6 @@
 {
   "name": "spidermonkey-m-wabt",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Exposes wasmTextToBinary and wasmBinaryToText SM functionality to CLI.",
   "main": "index.js",
   "engines": {

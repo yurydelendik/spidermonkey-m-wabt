@@ -9,6 +9,10 @@ var exec = require('child_process').exec;
 var jsshellPath = path.join(__dirname, 'spidermonkey',
   process.platform === 'win32' ? 'js.exe' : 'js');
 
+function quoteFilename(name) {
+  return "'" + name + "'";
+}
+
 var wast2wasmCmd = 'os.file.writeTypedArrayToFile(${out}, ' +
   'new Uint8Array(wasmTextToBinary(os.file.readFile(${in}))))';
 
@@ -19,14 +23,14 @@ function wast2wasm(inputFile, outputFile, callback) {
       return;
     }
     var cmd = wast2wasmCmd.
-      replace('${in}', JSON.stringify(inputFile)).
-      replace('${out}', JSON.stringify(outputFile));;
-    cmd = jsshellPath + ' -e \'' + cmd + '\'';
+      replace('${in}', quoteFilename(inputFile)).
+      replace('${out}', quoteFilename(outputFile));
+    cmd = jsshellPath + ' -e \"' + cmd + '\"';
     exec(cmd, function (err) { callback && callback(err); });
   });
 }
 
-var wasm2wastCmd = 'print(wasmBinaryToText(read(${in}, "binary")))';
+var wasm2wastCmd = 'print(wasmBinaryToText(read(${in}, \'binary\')))';
 
 function wasm2wast(inputFile, outputFile, callback) {
   fs.exists(inputFile, function (exists) {
@@ -35,8 +39,8 @@ function wasm2wast(inputFile, outputFile, callback) {
       return;
     }
     var cmd = wasm2wastCmd.
-      replace('${in}', JSON.stringify(inputFile));
-    cmd = jsshellPath + ' -e \'' + cmd + '\'';
+      replace('${in}', quoteFilename(inputFile));
+    cmd = jsshellPath + ' -e \"' + cmd + '\"';
     exec(cmd, function (err, stdout) {
       if (err) {
         callback && callback(err);
