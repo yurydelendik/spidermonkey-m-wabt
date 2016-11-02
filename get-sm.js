@@ -8,7 +8,7 @@ var log = require('npmlog');
 var decompress = require('decompress');
 var rimraf = require('rimraf');
 
-var smBaseUrl = 'https://ftp.mozilla.org/pub/firefox/nightly/2016/10/2016-10-01-03-04-30-mozilla-central/';
+var smBaseUrl = 'http://ftp.mozilla.org/pub/firefox/nightly/2016/10/2016-10-31-03-02-02-mozilla-central/';
 var outputDirectory = './spidermonkey';
 var tmpFile = ".downloaded.zip";
 

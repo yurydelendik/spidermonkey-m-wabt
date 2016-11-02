@@ -1,6 +1,6 @@
 {
   "name": "spidermonkey-m-wabt",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Exposes wasmTextToBinary and wasmBinaryToText SM functionality to CLI.",
   "main": "index.js",
   "engines": {
@@ -8,10 +8,11 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "install": "node ./get-sm.js"
+    "install": "node ./get-sm.js",
+    "clean": "rm -rf node_modules/ spidermonkey/"
   },
   "bin": {
-    "sm-wabt": "./bin/sm-wabt"
+    "sm-wabt": "./cli.js"
   },
   "keywords": [
     "SpiderMonkey",
@@ -19,7 +20,7 @@
     "wasm"
   ],
   "author": "Yury Delendik",
-  "license": "MPL",
+  "license": "MPL-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/yurydelendik/spidermonkey-m-wabt.git"
